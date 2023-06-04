@@ -12,7 +12,9 @@ class RecipeController extends Controller
      */
     public function index()
     {
-        //
+        $recipes = [];//Recipe::paginate(15);
+
+        return view('recipes.index', compact('recipes'));
     }
 
     /**

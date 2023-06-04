@@ -20,7 +20,7 @@
     <body class="font-sans antialiased">
         <x-banner />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen" style="background-image: url('/img/bg.jpeg')">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -36,6 +36,8 @@
             <main>
                 {{ $slot }}
             </main>
+
+            <x-footer></x-footer>
         </div>
 
         @stack('modals')
