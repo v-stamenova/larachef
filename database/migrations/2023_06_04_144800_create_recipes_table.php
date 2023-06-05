@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
+            $table->string('name')->nullable(false);
+            $table->string('description')->nullable(true);
+            $table->string('photo')->nullable(true);
+            $table->text('instructions')->nullable(false);
+            $table->unsignedBigInteger('creator_id')->nullable(false);
+
+            $table->foreign('creator_id')
+                ->references('id')
+                ->on('users');
+
             $table->timestamps();
         });
     }

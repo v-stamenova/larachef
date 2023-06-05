@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RecipeController extends Controller
 {
@@ -12,7 +13,7 @@ class RecipeController extends Controller
      */
     public function index()
     {
-        $recipes = [];//Recipe::paginate(15);
+        $recipes = Recipe::all();
 
         return view('recipes.index', compact('recipes'));
     }
@@ -22,7 +23,7 @@ class RecipeController extends Controller
      */
     public function create()
     {
-        //
+        return view('recipes.create');
     }
 
     /**
@@ -30,7 +31,14 @@ class RecipeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Recipe::create(array_merge(
+            $request->validate(Recipe::rules()),
+            ['creator_id' => Auth::user()->id],
+            ['photo' => $this->getPhoto($request)]
+        ));
+
+
+        return redirect(route('recipes.index'));
     }
 
     /**
@@ -38,7 +46,7 @@ class RecipeController extends Controller
      */
     public function show(Recipe $recipe)
     {
-        //
+        return view('recipes.show', compact('recipe'));
     }
 
     /**
@@ -46,7 +54,7 @@ class RecipeController extends Controller
      */
     public function edit(Recipe $recipe)
     {
-        //
+        return view('recipes.edit', compact('recipe'));
     }
 
     /**
@@ -54,7 +62,15 @@ class RecipeController extends Controller
      */
     public function update(Request $request, Recipe $recipe)
     {
-        //
+        $recipe->update(array_merge(
+            $request->validate(Recipe::rules()),
+        ));
+
+        if ($request->has('photo')) {
+            $recipe->update(['photo' => $this->getPhoto($request)]);
+        }
+
+        return redirect(route('recipes.edit', $recipe))->with('status', 'The recipe has been successfully updated');
     }
 
     /**
@@ -62,6 +78,33 @@ class RecipeController extends Controller
      */
     public function destroy(Recipe $recipe)
     {
-        //
+        $recipe->delete();
+
+        return redirect(route('recipes.index'))->with('status', 'The recipe has been successfully deleted');
+    }
+
+    /**
+     * Saves the image to the public/uploads and
+     * returns the name of the file
+     *
+     * @param Request $request
+     * @return string
+     */
+    private function getPhoto(Request $request): string
+    {
+        $request->validate([
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif',
+        ]);
+
+        // Get the uploaded file
+        $photo = $request->file('photo');
+
+        // Generate a unique name for the file
+        $fileName = time() . '_' . $photo->getClientOriginalName();
+
+        // Move the uploaded file to the desired location
+        $photo->move(public_path('uploads'), $fileName);
+
+        return $fileName;
     }
 }
