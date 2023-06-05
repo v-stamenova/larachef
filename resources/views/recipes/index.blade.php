@@ -10,9 +10,9 @@
                             <h1 class="text-8xl text-gray-200 pb-5">Recipes</h1>
                         </div>
                         <div class="flex items-center">
-                            <a href="{{route('recipes.create')}}">
-                                <x-danger-button>Add a new recipe</x-danger-button>
-                            </a>
+                            @can('create recipe')
+                                <x-link-button href="{{route('recipes.create')}}">Add a new recipe</x-link-button>
+                            @endcan
                         </div>
                     </div>
 
@@ -26,10 +26,6 @@
                                 </div>
                             </a>
                         @endforeach
-                        <x-card :title="'The quick brown fox'"
-                                :imagePath="'/img/bg.jpeg'"
-                                :description="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis congue lobortis feugiat. Duis ornare a eros vitae ornare. Etiam commodo ultricies urna eu rhoncus. Sed dapibus imperdiet felis. Sed elementum nulla non turpis rhoncus tincidunt.'"></x-card>
-
                     </div>
                 </div>
             </div>

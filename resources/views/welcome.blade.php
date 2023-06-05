@@ -18,7 +18,6 @@
                         </h1>
                     @endauth
 
-
                     <p class="mt-6 text-gray-500 dark:text-gray-400 leading-relaxed">
                         We know that cooking can sometimes feel like an enigmatic coding assignment, but fear not,
                         because LaraChef is

@@ -33,14 +33,18 @@
                     <p class="text-gray-200">{{$recipe->instructions}}</p>
                 </div>
 
-                <!-- Actions -->
-                <div class="flex flex-row pb-5 pt-10">
-                    <div class="pr-5">
-                        <a href="{{route('recipes.edit', $recipe)}}">
-                            <x-button class="dark:bg-red-200 dark:hover:bg-red-300">Edit the recipe</x-button>
-                        </a>
-                    </div>
-                </div>
+                @auth()
+                    @if(auth()->user()->can('edit recipe') && auth()->user()->id == $recipe->creator_id)
+                        <!-- Actions -->
+                        <div class="flex flex-row pb-5 pt-10">
+                            <div class="pr-5">
+                                <x-link-button href="{{route('recipes.edit', $recipe)}}"
+                                               class="dark:bg-red-200 dark:hover:bg-red-300">Edit the recipe
+                                </x-link-button>
+                            </div>
+                        </div>
+                    @endif
+                @endauth
             </div>
         </div>
     </body>
