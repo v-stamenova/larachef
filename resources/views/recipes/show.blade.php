@@ -6,6 +6,7 @@
                 <!-- Heading -->
                 <div class="py-5">
                     <h1 class="text-gray-200 text-2xl">{{$recipe->name}}</h1>
+                    <h1 class="text-gray-200 text-lg">Created by {{$recipe->creator->name}}</h1>
                 </div>
 
                 <!-- Image -->
@@ -42,6 +43,18 @@
                                                class="dark:bg-red-200 dark:hover:bg-red-300">Edit the recipe
                                 </x-link-button>
                             </div>
+                        </div>
+                    @elseif(auth()->user()->hasRole('admin'))
+                        <!-- Actions -->
+                        <div class="flex flex-row pb-5 pt-5">
+                            <form method="POST" action="{{route('recipes.destroy', $recipe)}}">
+                                @method('DELETE')
+                                @csrf
+                                <div class="pr-5">
+                                    <x-button class="dark:bg-red-200 dark:hover:bg-red-300" type="submit">Delete
+                                    </x-button>
+                                </div>
+                            </form>
                         </div>
                     @endif
                 @endauth

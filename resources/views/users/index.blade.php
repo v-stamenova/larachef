@@ -26,11 +26,13 @@
                                     <td>{{$user->email}}</td>
                                     <td>{{$user->name}}</td>
                                     <td>
-                                        <form action="{{route('admin.users.delete', $user)}}">
-                                            @csrf
-                                            @method("DELETE")
-                                            <x-danger-button>Delete</x-danger-button>
-                                        </form>
+                                        @if(Auth::user()->id != $user->id)
+                                            <form method="POST" action="{{route('admin.users.delete', $user)}}">
+                                                @csrf
+                                                @method("DELETE")
+                                                <x-danger-button type="submit">Delete</x-danger-button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

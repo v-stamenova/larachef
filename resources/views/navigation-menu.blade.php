@@ -15,6 +15,14 @@
                     <x-nav-link href="{{ route('recipes.index') }}" :active="request()->routeIs('recipes.index')">
                         {{ __('Recipes') }}
                     </x-nav-link>
+                    @auth()
+                        @can('view users')
+                            <x-nav-link href="{{ route('admin.index') }}"
+                                        :active="request()->routeIs('admin.index')">
+                                {{ __('Users') }}
+                            </x-nav-link>
+                        @endcan
+                    @endauth
                 </div>
             </div>
             @guest()

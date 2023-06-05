@@ -23,8 +23,10 @@ class RecipeController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->hasRole('writer')) {
-            return view('recipes.create');
+        if (Auth::check()) {
+            if (Auth::user()->hasRole('writer')) {
+                return view('recipes.create');
+            }
         }
 
         abort(403);
@@ -35,14 +37,16 @@ class RecipeController extends Controller
      */
     public function store(Request $request)
     {
-        if (Auth::user()->hasRole('writer')) {
-            Recipe::create(array_merge(
-                $request->validate(Recipe::rules()),
-                ['creator_id' => Auth::user()->id],
-                ['photo' => $this->getPhoto($request)]
-            ));
+        if (Auth::check()) {
+            if (Auth::user()->hasRole('writer')) {
+                Recipe::create(array_merge(
+                    $request->validate(Recipe::rules()),
+                    ['creator_id' => Auth::user()->id],
+                    ['photo' => $this->getPhoto($request)]
+                ));
 
-            return redirect(route('recipes.index'));
+                return redirect(route('recipes.index'));
+            }
         }
 
         abort(403);
@@ -61,8 +65,10 @@ class RecipeController extends Controller
      */
     public function edit(Recipe $recipe)
     {
-        if (Auth::user()->id === $recipe->creator_id) {
-            return view('recipes.edit', compact('recipe'));
+        if (Auth::check()) {
+            if (Auth::user()->id === $recipe->creator_id) {
+                return view('recipes.edit', compact('recipe'));
+            }
         }
 
         abort(403);
@@ -73,16 +79,18 @@ class RecipeController extends Controller
      */
     public function update(Request $request, Recipe $recipe)
     {
-        if (Auth::user()->id === $recipe->creator_id) {
-            $recipe->update(array_merge(
-                $request->validate(Recipe::rules()),
-            ));
+        if (Auth::check()) {
+            if (Auth::user()->id === $recipe->creator_id) {
+                $recipe->update(array_merge(
+                    $request->validate(Recipe::rules()),
+                ));
 
-            if ($request->has('photo')) {
-                $recipe->update(['photo' => $this->getPhoto($request)]);
+                if ($request->has('photo')) {
+                    $recipe->update(['photo' => $this->getPhoto($request)]);
+                }
+
+                return redirect(route('recipes.show', $recipe))->with('status', 'The recipe has been successfully updated');
             }
-
-            return redirect(route('recipes.show', $recipe))->with('status', 'The recipe has been successfully updated');
         }
 
         abort(403);
@@ -93,11 +101,12 @@ class RecipeController extends Controller
      */
     public function destroy(Recipe $recipe)
     {
-        if (Auth::user()->id === $recipe->creator_id || Auth::user()->hasRole('Admin')) {
-            $recipe->delete();
-            return redirect(route('recipes.index'))->with('status', 'The recipe has been successfully deleted');
+        if (Auth::check()) {
+            if (Auth::user()->id === $recipe->creator_id || Auth::user()->hasRole('admin')) {
+                $recipe->delete();
+                return redirect(route('recipes.index'))->with('status', 'The recipe has been successfully deleted');
+            }
         }
-
         abort(403);
     }
 
